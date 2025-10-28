@@ -7,7 +7,9 @@ import { SECRET } from "../config/config.js";
 export const registerUserService = async (userData) => {
     const existingUser = await User.findOne({ email: userData.email });
     if (existingUser) {
-      throw new Error("Este email ya se encuentra registrado")
+      const error = new Error("Este email ya se encuentra registrado");
+      error.statusCode = 400;
+      throw error;
     }
     const newUser = new User(userData);
     await newUser.save();

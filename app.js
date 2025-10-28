@@ -3,7 +3,9 @@ import { connectDB } from './src/config/db.js'
 import { PORT } from './src/config/config.js'
 import cors from 'cors'
 import bodyParser from 'body-parser'
-import userRoutes from "./src/routes/userRoute.js";
+import userRoute from "./src/routes/userRoute.js";
+import categoryRoute from "./src/routes/categoryRoute.js";
+
 
 // Instancia del servidor de express
 const app = express()
@@ -23,7 +25,8 @@ app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({extended: true}))
 
 // Rutas
-app.use("/users", userRoutes);
+app.use("/users", userRoute);
+app.use("/category", categoryRoute);
 
 // Puerto de escucha
 app.listen(PORT, () => {

@@ -39,10 +39,10 @@ const userSchema = new mongoose.Schema({
 
 }, {timestamps: true} )
 
-    // Encriptamos la password
-    userSchema.pre("save", function (next) {
-        this.password = bcrypt.hashSync(this.password, 10)
-        next()
-    } )
+// Encriptamos la password
+userSchema.pre("save", function (next) {
+    this.password = bcrypt.hashSync(this.password, 10)
+    next()
+} )
 
 export default mongoose.model("user", userSchema)
