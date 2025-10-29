@@ -5,6 +5,7 @@ import cors from 'cors'
 import bodyParser from 'body-parser'
 import userRoute from "./src/routes/userRoute.js";
 import categoryRoute from "./src/routes/categoryRoute.js";
+import productRoute from "./src/routes/productRoute.js";
 
 
 // Instancia del servidor de express
@@ -27,6 +28,7 @@ app.use(bodyParser.urlencoded({extended: true}))
 // Rutas
 app.use("/users", userRoute);
 app.use("/category", categoryRoute);
+app.use("/products", productRoute);
 
 // Puerto de escucha
 app.listen(PORT, () => {
