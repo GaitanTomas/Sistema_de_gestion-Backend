@@ -9,6 +9,8 @@ API REST en **Node.js** + **Express** + **MongoDB** para gestionar usuarios, cat
 Sistema_de_gestion-Backend/
 ├── node_modules/                      # Dependencias instaladas por npm
 ├── src/
+│   ├── assets/                        # Recursos estáticos
+│   │   └── images/         
 │   ├── config/                        # Configuración general (base de datos, variables, etc.)
 │   │   └── config.js            
 │   │   └── db.js                 
@@ -53,7 +55,7 @@ Sistema_de_gestion-Backend/
 
 ## 🗂 Esquema de la DB (colecciones)
 
-![Esquema de la base de datos](../Diagrama%20DB%20UTN.png)
+![Esquema de la base de datos](./src/assets/images/Diagrama%20DB%20UTN.png)
 
 ---
 
@@ -134,13 +136,13 @@ npm install
 
 🧰 Scripts disponibles:
 
--*Modo desarrollo*
+- *Modo desarrollo*
 ```
 npm run dev
 
 ```
 
--*Modo producción*
+- *Modo producción*
 ```
 npm start
 
@@ -261,6 +263,7 @@ MOCKS DE PRODUCTOS
 3) Obtener por ID (pública) — GET /products/getProductById/<ID_DEL_PRODUCTO>
 
 4) Buscar por nombre (pública) — GET /products/search?name=iPhone
+
 *Nota: Podés cambiar iPhone por cualquier palabra parcial para probar la búsqueda.*
 
 5) Actualizar (protegida) — PUT /products/updateProduct/<ID_DEL_PRODUCTO>
