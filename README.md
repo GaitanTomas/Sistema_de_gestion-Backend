@@ -55,7 +55,7 @@ Sistema_de_gestion-Backend/
 
 ## 🗂 Esquema de la DB (colecciones)
 
-![Esquema de la base de datos](./src/assets/images/Diagrama%20DB%20UTN.png)
+![Esquema de la base de datos](./src/assets/images/Diagrama-DB-UTN.png)
 
 ---
 
