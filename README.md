@@ -11,6 +11,7 @@ Sistema_de_gestion-Backend/
 ├── src/
 │   ├── assets/                        # Recursos estáticos
 │   │   └── images/         
+│   │
 │   ├── config/                        # Configuración general (base de datos, variables, etc.)
 │   │   └── config.js            
 │   │   └── db.js                 
@@ -153,11 +154,11 @@ Usar header en rutas protegidas:
 Authorization: Bearer <JWT_TOKEN_AQUI>
 
 Rutas de Usuarios
-- POST /createAdmin — Crear admin (protegida)
 - POST /users/register — Registro (pública)
 - POST /users/login — Login (pública) → devuelve JWT
+- POST /users/createAdmin — Crear admin (protegida)
 - GET /users/getUsers — Obtener todos (protegida)
-- GET /users/getUsersById/:id — Obtener por ID (protegida)
+- GET /users/getUserById/:id — Obtener por ID (protegida)
 - PUT /users/updateUser/:id — Actualizar (protegida)
 - DELETE /users/deleteUser/:id — Eliminar (protegida)
 
