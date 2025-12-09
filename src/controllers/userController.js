@@ -1,4 +1,4 @@
-import { registerUserService, loginUserService, getUsersService, getUserByIdService, updateUserService, deleteUserService } from "../services/userService.js";
+import { registerUserService, loginUserService, createAdminService, getUsersService, getUserByIdService, updateUserService, deleteUserService } from "../services/userService.js";
 
 // Registro de usuario
 export const registerUserController = async (req, res) => {
@@ -70,5 +70,15 @@ export const deleteUserController = async (req, res) => {
         res.status(200).json(result);
     } catch (error) {
         return res.status(error.statusCode || 500).json({ message: error.message });
+    }
+};
+
+// Crear un administrador
+export const createAdminController = async (req, res) => {
+    try {
+        const result = await createAdminService(req.body);
+        res.status(201).json(result);
+    } catch (err) {
+    res.status(err.statusCode || 500).json({ message: err.message });
     }
 };

@@ -1,5 +1,4 @@
 import mongoose from 'mongoose';
-import Category from './categoryModel.js';
 
 const productSchema = new mongoose.Schema({
     name: {
@@ -12,7 +11,7 @@ const productSchema = new mongoose.Schema({
     price: {
         type: Number,
         required: true,
-        min: 0
+        min: [0, 'El precio no puede ser negativo']
     },
     description: {
         type: String,
@@ -22,7 +21,7 @@ const productSchema = new mongoose.Schema({
     stock: {
         type: Number,
         required: true,
-        min: 0
+        min: [0, 'El stock no puede ser negativo']
     },
     category: {
         type: mongoose.Schema.Types.ObjectId,

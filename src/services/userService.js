@@ -11,9 +11,12 @@ export const registerUserService = async (userData) => {
       error.statusCode = 400;
       throw error;
     }
-    const newUser = new User(userData);
+    // Asignar rol por defecto
+    const safeUserData = { ...userData, role: 'user' };
+    // Crear nuevo usuario
+    const newUser = new User(safeUserData);
     await newUser.save();
-    return { message: "Usuario creado correctamente" }
+    return { message: "Usuario creado correctamente", userId: newUser._id };
 };
 
 // Login de usuario
@@ -33,10 +36,11 @@ export const loginUserService = async (email, password) => {
     // Token JWT
     const payload = {
       userId: user._id,
-      userEmail: user.email
+      userEmail: user.email,
+      role: user.role
     }
     const token = jwt.sign(payload, SECRET, { expiresIn: "1d" });
-    return { message: "Inicio de sesión exitoso", token }
+    return { message: "Inicio de sesión exitoso", token, user: { id: user._id, email: user.email, role: user.role }};
 };
 
 // Obtener todos los usuarios
@@ -82,4 +86,26 @@ export const deleteUserService = async (userId) => {
         throw error    
     }
     return { mensaje: "Usuario eliminado correctamente" };
+};
+
+// Crear admin (solo si viene de un admin)
+export const createAdminService = async (adminData) => {
+  const existingUser = await User.findOne({ email: adminData.email });
+  if (existingUser) {
+    const error = new Error("Este email ya está registrado");
+    error.statusCode = 400;
+    throw error;
+  }
+
+  const newAdmin = new User({
+    name: adminData.name,
+    lastName: adminData.lastName,
+    email: adminData.email,
+    password: adminData.password,
+    role: "admin"
+  });
+
+  await newAdmin.save();
+
+  return { message: "Administrador creado correctamente", adminId: newAdmin._id };
 };

@@ -35,14 +35,21 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: true,
         match: /(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,12}/
+    },
+
+    role: {
+        type: String,
+        enum: ['user', 'admin'],
+        default: 'user'
     }
 
 }, {timestamps: true} )
 
 // Encriptamos la password
 userSchema.pre("save", function (next) {
-    this.password = bcrypt.hashSync(this.password, 10)
-    next()
-} )
+    if (!this.isModified('password')) return next();
+    this.password = bcrypt.hashSync(this.password, 10);
+    next();
+});
 
 export default mongoose.model("User", userSchema)
