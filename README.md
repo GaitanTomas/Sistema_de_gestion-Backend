@@ -1,6 +1,6 @@
 # 🛒 Sistema de Gestión - Backend
 
-API REST en **Node.js** + **Express** + **MongoDB** para gestionar usuarios, categorías y productos. Pensado como backend de un sistema de inventario para comercios, con autenticación **JWT**, encriptación de contraseñas con **bcrypt**, rutas protegidas para administración del stock. (El manejo de roles —admin/cliente— está planificado pero aún no implementado).
+API REST en **Node.js** + **Express** + **MongoDB** para gestionar usuarios, categorías y productos. Pensado como backend de un sistema de inventario para comercios, con autenticación **JWT**, encriptación de contraseñas con **bcrypt**, manejo de roles admin/cliente y rutas protegidas para administración del stock.
 
 ---
 
@@ -35,11 +35,10 @@ Sistema_de_gestion-Backend/
 │   │   ├── categoryRoute.js           # Rutas de categorías (/categories)
 │   │   └── userRoute.js               # Rutas de usuarios (/users)
 │   │
-│   ├── middleware/                    # Middlewares personalizados
-│   │   └── verifyTokenMiddleware.js   # Middleware de autenticación JWT
-│   │
-│   └── utils/                         # Funciones auxiliares
-│       └── verifyToken.js 
+│   └── middleware/                    # Middlewares personalizados
+│       └── verifyTokenMiddleware.js   # Middleware de autenticación JWT
+│       └── authorizeOwnerOrRoles.js   # Gestiona rol de admin o dueño
+│       └── authorizeRoles.js          # Gestiona rol de admin
 │
 ├── .env                          # Variables de entorno (URI MongoDB, JWT_SECRET, etc.)
 ├── .env.example                  # Ejemplo de configuración del entorno
@@ -154,6 +153,7 @@ Usar header en rutas protegidas:
 Authorization: Bearer <JWT_TOKEN_AQUI>
 
 Rutas de Usuarios
+- POST /createAdmin — Crear admin (protegida)
 - POST /users/register — Registro (pública)
 - POST /users/login — Login (pública) → devuelve JWT
 - GET /users/getUsers — Obtener todos (protegida)
@@ -185,9 +185,9 @@ MOCKS DE USUARIOS
 1) Registro — POST /users/register
 ```json
 {
-  "name": "Tomás",
-  "lastName": "Gaitán",
-  "email": "tomas@mail.com",
+  "name": "user",
+  "lastName": "nuevo",
+  "email": "user@mail.com",
   "password": "Abc1234"
 }
 ```
@@ -195,7 +195,7 @@ MOCKS DE USUARIOS
 2) Login — POST /users/login
 ```json
 {
-  "email": "tomas@mail.com",
+  "email": "user@mail.com",
   "password": "Abc1234"
 }
 ```
@@ -210,7 +210,7 @@ Header: Authorization: Bearer <JWT_TOKEN_AQUI>
 5) Actualizar (protegida) — PUT /users/updateUser/<ID_DEL_USUARIO>
 ```json
 {
-  "name": "Tomás Actualizado",
+  "name": "User Actualizado",
   "password": "NewPass123"
 }
 ```
