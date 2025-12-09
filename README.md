@@ -284,7 +284,6 @@ MOCKS DE PRODUCTOS
 - Si ves errores como "Schema hasn't been registered for model 'X'", verificar que los modelos en `src/models/*.js` exporten correctamente `mongoose.model('X', schema)` y que no haya importaciones circulares.
 - El middleware de verificación JWT debe ejecutarse y asignar correctamente `req.user` (contiene el id del usuario) antes de crear productos, ya que el Product schema requiere `user`.
 - Para probar usar Thunder Client / Postman: incluir header Authorization en rutas protegidas.
-- Roles admin/cliente: diseñado para implementarse en el middleware de autenticación y en las rutas protegidas (actualmente no activo).
 
 ---
 
