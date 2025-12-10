@@ -64,7 +64,7 @@ export const getUserByIdService = async (userId) => {
 };
 
 // Actualizar un usuario
-export const updateUserService = async (userId, userData) => {
+export const updateUserService = async (userId, userData, options = {}) => {
   // Eliminar campos vacíos
   Object.keys(userData).forEach((key) => {
       if (
@@ -95,7 +95,11 @@ export const updateUserService = async (userId, userData) => {
     }
     userData.password = bcrypt.hashSync(userData.password, 10);
   }
-  const updatedUser = await User.findByIdAndUpdate(userId, userData, { new: true }).select("-password");
+  const updatedUser = await User.findByIdAndUpdate(
+    userId,
+    userData,
+    { new: true, runValidators: true, ...options }
+  ).select("-password");
   if (!updatedUser) throw ApiError.notFound("Usuario no encontrado");
   return updatedUser;
 };

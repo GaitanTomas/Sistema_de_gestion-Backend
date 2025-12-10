@@ -24,10 +24,13 @@ export const getCategoryByIdController = catchAsync(async (req, res) => {
 
 // Actualizar una categoría
 export const updateCategoryController = catchAsync(async (req, res) => {
-    const category = await updateCategoryService(req.params.id, req.body);
+    const data = { ...req.body };
+    // Sanitiza campos de texto antes de actualizar
+    if (data.name) data.name = data.name.trim().toLowerCase();
+    if (data.description) data.description = data.description.trim().toLowerCase();
+    const category = await updateCategoryService(req.params.id, data);
     res.status(200).json(category);
 });
-
 
 // Eliminar una categoría
 export const deleteCategoryController = catchAsync(async (req, res) => {

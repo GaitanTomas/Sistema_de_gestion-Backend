@@ -1,6 +1,10 @@
 import mongoose from 'mongoose'
 import bcrypt from 'bcrypt'
 
+// regex para validar email y contraseña
+const emailRegex = /^\S+@\S+\.\S+$/;
+const passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,12}$/;
+
 const userSchema = new mongoose.Schema({
     name: {
         type: String,
@@ -28,17 +32,20 @@ const userSchema = new mongoose.Schema({
         trim: true,
         lowercase: true,
         unique: true,
+        match: [emailRegex, "El email no es válido"]
     },
 
     password: {
         type: String,
         required: true,
+        match: [passwordRegex, "La contraseña debe tener 6-12 caracteres, incluyendo al menos una mayúscula, una minúscula y un número"]
     },
 
     role: {
         type: String,
         enum: ['user', 'admin'],
-        default: 'user'
+        default: 'user',
+        lowercase: true
     }
 
 }, {timestamps: true} )

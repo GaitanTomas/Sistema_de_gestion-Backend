@@ -16,7 +16,8 @@ const productSchema = new mongoose.Schema({
     description: {
         type: String,
         trim: true,
-        maxlength: 200
+        maxlength: 200,
+        lowercase: true
     },
     stock: {
         type: Number,

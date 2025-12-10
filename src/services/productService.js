@@ -26,22 +26,22 @@ export const createProductService = async (productData, userId) => {
 
 // Obtener todos los producto
 export const getProductsService = async () => {
-  const products = await Product.find()
-      .populate("category", "name")
-      .populate("user", "name lastName email");
-  if (products.length === 0) {
+    const products = await Product.find()
+        .populate("category", "name")
+        .populate("user", "name lastName email");
+    if (products.length === 0) {
     return [];
-  }
-  return products;
+    }
+    return products;
 };
 
 // Obtener un producto por ID
 export const getProductByIdService = async (productId) => {
-  const product = await Product.findById(productId)
-      .populate("category", "name")
-      .populate("user", "name email");
-  if (!product) throw ApiError.notFound("Producto no encontrado");
-  return product;
+    const product = await Product.findById(productId)
+        .populate("category", "name")
+        .populate("user", "name email");
+    if (!product) throw ApiError.notFound("Producto no encontrado");
+    return product;
 };
 
 // Buscar productos por nombre (para barra de búsqueda)
@@ -69,6 +69,9 @@ export const updateProductService = async (productId, productData) => {
     if (Object.keys(productData).length === 0) {
         throw ApiError.badRequest("No se enviaron datos válidos para actualizar");
     }
+    // Sanitiza campos de texto
+    if (productData.name) productData.name = productData.name.trim().toLowerCase();
+    if (productData.description) productData.description = productData.description.trim().toLowerCase();
     // Validaciones numéricas
     if (productData.price !== undefined) {
         if (typeof productData.price !== "number" || productData.price < 0) {
@@ -85,8 +88,12 @@ export const updateProductService = async (productId, productData) => {
         const existingCategory = await Category.findById(productData.category);
         if (!existingCategory) throw ApiError.notFound("La categoría seleccionada no existe");
     }
-    // Actualizar producto
-    const updatedProduct = await Product.findByIdAndUpdate(productId, productData, { new: true })
+    // Actualizar producto con validaciones activadas
+    const updatedProduct = await Product.findByIdAndUpdate(
+        productId,
+        productData,
+        { new: true, runValidators: true }
+    )
         .populate("category", "name")
         .populate("user", "name email");
     if (!updatedProduct) throw ApiError.notFound("Producto no encontrado");
@@ -95,7 +102,7 @@ export const updateProductService = async (productId, productData) => {
 
 // Eliminar un producto
 export const deleteProductService = async (productId) => {
-  const deletedProduct = await Product.findByIdAndDelete(productId);
-  if(!deletedProduct) throw ApiError.notFound("Producto no encontrado");
-  return { message: "Producto eliminado correctamente" };
+    const deletedProduct = await Product.findByIdAndDelete(productId);
+    if(!deletedProduct) throw ApiError.notFound("Producto no encontrado");
+    return { message: "Producto eliminado correctamente" };
 }

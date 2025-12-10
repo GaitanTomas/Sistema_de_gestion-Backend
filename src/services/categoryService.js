@@ -14,7 +14,7 @@ export const createCategoryService = async (categoryData) => {
 export const getCategoryService = async () => {
     const categories = await Category.find();
     if(categories.length === 0){
-      return [];
+        return [];
     }
     return categories
 };
@@ -28,14 +28,17 @@ export const getCategoryByIdService = async (categoryId) => {
 
 // Actualizar una categoría
 export const updateCategoryService = async (categoryId, categoryData) => {
-    const updatedCategory = await Category.findByIdAndUpdate(categoryId, categoryData, { new: true });
-    if (!updatedCategory) throw ApiError.notFound("Categoría no encontrada")
+    // Sanitiza campos de texto antes de actualizar
+    if (categoryData.name) categoryData.name = categoryData.name.trim().toLowerCase();
+    if (categoryData.description) categoryData.description = categoryData.description.trim().toLowerCase();
+    const updatedCategory = await Category.findByIdAndUpdate(categoryId, categoryData, { new: true, runValidators: true });
+    if (!updatedCategory) throw ApiError.notFound("Categoría no encontrada");
     return updatedCategory;
 };
 
 // Eliminar una categoría
 export const deleteCategoryService = async (categoryId) => {
     const deletedCategory = await Category.findByIdAndDelete(categoryId);
-      if (!deletedCategory) throw ApiError.notFound("Categoría no encontrada");
+    if (!deletedCategory) throw ApiError.notFound("Categoría no encontrada");
     return {message: "Categoría eliminada correctamente"};
 };

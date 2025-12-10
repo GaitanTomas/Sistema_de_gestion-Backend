@@ -31,7 +31,11 @@ export const findProductByNameController = catchAsync(async (req, res) => {
 
 // Actualizar un producto
 export const updateProductController = catchAsync(async (req, res) => {
-    const result = await updateProductService(req.params.id, req.body);
+    const data = { ...req.body };
+    // Sanitiza campos de texto
+    if (data.name) data.name = data.name.trim().toLowerCase();
+    if (data.description) data.description = data.description.trim().toLowerCase();
+    const result = await updateProductService(req.params.id, data);
     res.status(200).json(result);
 });
 

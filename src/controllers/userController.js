@@ -31,7 +31,13 @@ export const getUserByIdController = catchAsync(async (req, res) => {
 
 // Actualizar un usuario
 export const updateUserController = catchAsync(async (req, res) => {
-    const updatedUser = await updateUserService(req.params.id, req.body);
+    const data = { ...req.body };
+    // Sanitiza manualmente los campos de texto
+    if (data.name) data.name = data.name.trim().toLowerCase();
+    if (data.lastName) data.lastName = data.lastName.trim().toLowerCase();
+    if (data.email) data.email = data.email.trim().toLowerCase();
+    // Llamamos al service que haga el update con runValidators
+    const updatedUser = await updateUserService(req.params.id, data, { runValidators: true });
     res.status(200).json(updatedUser);
 });
 
