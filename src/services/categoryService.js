@@ -1,13 +1,10 @@
 import Category from "../models/categoryModel.js";
+import { ApiError} from "../utils/apiError.js";
 
 // Crear una nueva categoría
 export const createCategoryService = async (categoryData) => {
     const existingCategory = await Category.findOne({ name: categoryData.name });
-    if (existingCategory) {
-      const error = new Error("Esta categoría ya existe");
-      error.statusCode = 400;
-      throw error;
-    }
+    if (existingCategory) throw ApiError.badRequest("La categoría ya existe");
     const newCategory = new Category(categoryData);
     await newCategory.save();
     return { message: "Categoría creada correctamente"}
@@ -25,32 +22,20 @@ export const getCategoryService = async () => {
 // Obtener una categoría por ID
 export const getCategoryByIdService = async (categoryId) => {
     const category = await Category.findById(categoryId);
-    if (!category) {
-        const error = new Error("Categoría no encontrada")
-        error.statusCode = 404
-        throw error
-    }
+    if (!category) throw ApiError.notFound("Categoría no encontrada");
     return category;
 };
 
 // Actualizar una categoría
 export const updateCategoryService = async (categoryId, categoryData) => {
     const updatedCategory = await Category.findByIdAndUpdate(categoryId, categoryData, { new: true });
-    if (!updatedCategory) {
-      const error = new Error("Categoría no encontrada")
-      error.statusCode = 404
-      throw error
-    }
+    if (!updatedCategory) throw ApiError.notFound("Categoría no encontrada")
     return updatedCategory;
 };
 
 // Eliminar una categoría
 export const deleteCategoryService = async (categoryId) => {
     const deletedCategory = await Category.findByIdAndDelete(categoryId);
-      if (!deletedCategory) {
-      const error = new Error("Categoría no encontrada")
-      error.statusCode = 404
-      throw error
-    }
+      if (!deletedCategory) throw ApiError.notFound("Categoría no encontrada");
     return {message: "Categoría eliminada correctamente"};
 };

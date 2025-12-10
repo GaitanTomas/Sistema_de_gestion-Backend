@@ -13,7 +13,7 @@ Sistema_de_gestion-Backend/
 │   │   └── images/         
 │   │
 │   ├── config/                        # Configuración general (base de datos, variables, etc.)
-│   │   └── config.js            
+│   │   ├── config.js            
 │   │   └── db.js                 
 │   │
 │   ├── models/                        # Definición de los esquemas de datos (Mongoose)
@@ -36,11 +36,16 @@ Sistema_de_gestion-Backend/
 │   │   ├── categoryRoute.js           # Rutas de categorías (/categories)
 │   │   └── userRoute.js               # Rutas de usuarios (/users)
 │   │
-│   └── middleware/                    # Middlewares personalizados
-│       └── verifyTokenMiddleware.js   # Middleware de autenticación JWT
-│       └── authorizeOwnerOrRoles.js   # Gestiona rol de admin o dueño
-│       └── authorizeRoles.js          # Gestiona rol de admin
-│
+│   ├── middleware/                    # Middlewares personalizados
+│   │   ├── verifyTokenMiddleware.js   # Middleware de autenticación JWT
+│   │   ├── authorizeOwnerOrRoles.js   # Gestiona rol de admin o dueño
+│   │   ├── authorizeRoles.js          # Gestiona rol de admin
+│   │   └── errorHandler.js            # Gestiona errores
+│   │
+│   └── utils/
+│       ├── apiError.js                # Clase para lanzar errores personalizados con status HTTP
+│       └── catchAsync.js              # Wrapper para evitar repetir try/catch en controladores
+│   
 ├── .env                          # Variables de entorno (URI MongoDB, JWT_SECRET, etc.)
 ├── .env.example                  # Ejemplo de configuración del entorno
 ├── .gitignore                    # Archivos y carpetas ignorados por Git
@@ -202,13 +207,26 @@ MOCKS DE USUARIOS
 ```
 (Copiar el token devuelto y usar en Authorization: Bearer <TOKEN>)
 
-3) Obtener todos (protegida) — GET /users/getUsers  
+3) Crear admin — POST /users/createAdmin
+```json
+{
+  "name": "admin",
+  "lastName": "nuevo",
+  "email": "adminnuevo@mail.com",
+  "password": "Abc1234"
+}
+```
+Esto solo se puede hacer si estas logueado con un token de administrador 
+Para esto, el admin principal se debe crear desde **MongoDB Compass** manualmente
+(Copiar el token devuelto al loguearte como admin y usar en Authorization: Bearer <TOKEN>)
+
+4) Obtener todos (protegida) — GET /users/getUsers  
 Header: Authorization: Bearer <JWT_TOKEN_AQUI>
 
-4) Obtener por ID (protegida) — GET /users/getUsersById/<ID_DEL_USUARIO>  
+5) Obtener por ID (protegida) — GET /users/getUsersById/<ID_DEL_USUARIO>  
 Header: Authorization: Bearer <JWT_TOKEN_AQUI>
 
-5) Actualizar (protegida) — PUT /users/updateUser/<ID_DEL_USUARIO>
+6) Actualizar (protegida) — PUT /users/updateUser/<ID_DEL_USUARIO>
 ```json
 {
   "name": "User Actualizado",
@@ -216,7 +234,7 @@ Header: Authorization: Bearer <JWT_TOKEN_AQUI>
 }
 ```
 
-6) Eliminar (protegida) — DELETE /users/deleteUser/<ID_DEL_USUARIO>
+7) Eliminar (protegida) — DELETE /users/deleteUser/<ID_DEL_USUARIO>
 
 ---
 
@@ -281,7 +299,16 @@ MOCKS DE PRODUCTOS
 
 ## ✅ Consejos y notas de desarrollo
 
+- Todos los **servicios** manejan errores de manera profesional usando la clase `ApiError`.  
+Esto significa que cada error devuelve el **status HTTP correcto**, y el middleware `errorHandler` captura y responde con un formato consistente:  
+```json
+{
+  "status": "error",
+  "message": "Descripción del error"
+}
+```
 - Si ves errores como "Schema hasn't been registered for model 'X'", verificar que los modelos en `src/models/*.js` exporten correctamente `mongoose.model('X', schema)` y que no haya importaciones circulares.
+- Todas las contraseñas de usuarios se guardan encriptadas usando bcrypt para garantizar seguridad.
 - El middleware de verificación JWT debe ejecutarse y asignar correctamente `req.user` (contiene el id del usuario) antes de crear productos, ya que el Product schema requiere `user`.
 - Para probar usar Thunder Client / Postman: incluir header Authorization en rutas protegidas.
 

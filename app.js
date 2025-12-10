@@ -6,6 +6,7 @@ import bodyParser from 'body-parser'
 import userRoute from "./src/routes/userRoute.js";
 import categoryRoute from "./src/routes/categoryRoute.js";
 import productRoute from "./src/routes/productRoute.js";
+import { errorHandler } from './src/middleware/errorHandler.js'
 
 
 // Instancia del servidor de express
@@ -34,3 +35,8 @@ app.use("/products", productRoute);
 app.listen(PORT, () => {
     console.log(`Server running at ${PORT}`)
 })
+
+// Middleware de manejo de errores
+app.use(errorHandler);
+
+export default app;
