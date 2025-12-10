@@ -216,9 +216,9 @@ MOCKS DE USUARIOS
   "password": "Abc1234"
 }
 ```
-Esto solo se puede hacer si estas logueado con un token de administrador 
-Para esto, el admin principal se debe crear desde **MongoDB Compass** manualmente
-(Copiar el token devuelto al loguearte como admin y usar en Authorization: Bearer <TOKEN>)
+- Esto solo se puede hacer si estas logueado con un token de administrador.
+- Para esto, el admin principal se debe crear desde **MongoDB Compass** manualmente.
+- (Copiar el token devuelto al loguearte como admin y usar en Authorization: Bearer <TOKEN>)
 
 4) Obtener todos (protegida) — GET /users/getUsers  
 Header: Authorization: Bearer <JWT_TOKEN_AQUI>
