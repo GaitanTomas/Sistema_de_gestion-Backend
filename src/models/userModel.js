@@ -28,13 +28,11 @@ const userSchema = new mongoose.Schema({
         trim: true,
         lowercase: true,
         unique: true,
-        match: /^\S+@\S+\.\S+$/
     },
 
     password: {
         type: String,
         required: true,
-        match: /(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,12}/
     },
 
     role: {
