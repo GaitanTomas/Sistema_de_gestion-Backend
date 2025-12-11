@@ -3,12 +3,13 @@ import { registerUserController, loginUserController, createAdminController, get
 import { verifyTokenMiddleware } from "../middleware/verifyTokenMiddleware.js";
 import { authorizeRoles } from "../middleware/authorizeRoles.js";
 import { authorizeOwnerOrRoles } from "../middleware/authorizeOwnerOrRoles.js";
+import { loginLimiter } from "../middleware/rateLimit.js";
 
 const router = express.Router();
 
 // Rutas públicas
 router.post("/register", registerUserController);
-router.post("/login", loginUserController);
+router.post("/login", loginLimiter, loginUserController);
 
 // Rutas protegidas con JWT
 router.post("/createAdmin", verifyTokenMiddleware, authorizeRoles('admin'), createAdminController);

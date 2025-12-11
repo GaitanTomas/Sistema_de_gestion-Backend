@@ -40,7 +40,8 @@ Sistema_de_gestion-Backend/
 │   │   ├── verifyTokenMiddleware.js   # Middleware de autenticación JWT
 │   │   ├── authorizeOwnerOrRoles.js   # Gestiona rol de admin o dueño
 │   │   ├── authorizeRoles.js          # Gestiona rol de admin
-│   │   └── errorHandler.js            # Gestiona errores
+│   │   ├── errorHandler.js            # Gestiona errores
+│   │   └── apiLimiter.js              # Controla las peticiones a la api y en el login
 │   │
 │   └── utils/
 │       ├── apiError.js                # Clase para lanzar errores personalizados con status HTTP
@@ -60,7 +61,7 @@ Sistema_de_gestion-Backend/
 
 ## 🗂 Esquema de la DB (colecciones)
 
-![Esquema de la base de datos](./src/assets/images/Diagrama-DB-UTN.png)
+![Esquema de la base de datos](src/assets/images/Diagrama-DB-UTN.png)
 
 ---
 
@@ -73,6 +74,7 @@ Sistema_de_gestion-Backend/
 - **bcrypt**
 - **Cors**
 - **Body-parser**
+- **express-rate-limit**
 - **nodemon** (dev)
 - **npm-check-updates** (dev)
 
@@ -90,6 +92,17 @@ PORT=3000
 ```
 
 Asegurarse que `src/config/config.js` lea estas variables.
+
+---
+
+## 🔒 Seguridad adicional: Rate Limiting
+
+Para proteger la API contra ataques de fuerza bruta y uso excesivo, se incorporo un **limitador de peticiones** usando `express-rate-limit`.  
+- Límites configurables (por defecto, X peticiones por Y minutos — ver en `src/middleware/apiLimiter.js`)  
+- Aplica a todas las rutas sensibles (autenticación, login, CRUDs)  
+- Ayuda a prevenir abusos, DoS ligeros y proteger recursos del servidor  
+
+Al usar la API, en cada request se monitorea la cantidad de peticiones; si se supera el umbral, la respuesta será un **429 Too Many Requests**.
 
 ---
 
@@ -132,6 +145,7 @@ npm install
 - cors
 - body-parser
 - dotenv
+- express-rate-limit
 
 *Dependencias de desarrollo:*
 - nodemon
@@ -158,29 +172,29 @@ npm start
 Usar header en rutas protegidas:
 Authorization: Bearer <JWT_TOKEN_AQUI>
 
-Rutas de Usuarios
-- POST /users/register — Registro (pública)
-- POST /users/login — Login (pública) → devuelve JWT
-- POST /users/createAdmin — Crear admin (protegida)
-- GET /users/getUsers — Obtener todos (protegida)
-- GET /users/getUserById/:id — Obtener por ID (protegida)
-- PUT /users/updateUser/:id — Actualizar (protegida)
-- DELETE /users/deleteUser/:id — Eliminar (protegida)
+**Rutas de Usuarios 👤**
+- POST /api/users/register — Registro (pública)
+- POST /api/users/login — Login (pública) → devuelve JWT
+- POST /api/users/createAdmin — Crear admin (protegida)
+- GET /api/users/getUsers — Obtener todos (protegida)
+- GET /api/users/getUserById/:id — Obtener por ID (protegida)
+- PUT /api/users/updateUser/:id — Actualizar (protegida)
+- DELETE /api/users/deleteUser/:id — Eliminar (protegida)
 
-Rutas de Categorías
-- POST /category/create — Crear (protegida)
-- GET /category/getCategory — Obtener todas (pública)
-- GET /category/getCategoryById/:id — Obtener por ID (pública)
-- PUT /category/updateCategory/:id — Actualizar (protegida)
-- DELETE /category/deleteCategory/:id — Eliminar (protegida)
+**Rutas de Categorías 🏷️**
+- POST /api/category/create — Crear (protegida)
+- GET /api/category/getCategory — Obtener todas (pública)
+- GET /api/category/getCategoryById/:id — Obtener por ID (pública)
+- PUT /api/category/updateCategory/:id — Actualizar (protegida)
+- DELETE /api/category/deleteCategory/:id — Eliminar (protegida)
 
-Rutas de Productos
-- POST /products/create — Crear (protegida)
-- GET /products/getProducts — Obtener todas (pública)
-- GET /products/getProductById/:id — Obtener por ID (pública)
-- GET /products/search?name=<texto> — Buscar por nombre (pública)
-- PUT /products/updateProduct/:id — Actualizar (protegida)
-- DELETE /products/deleteProduct/:id — Eliminar (protegida)
+**Rutas de Productos 📦**
+- POST /api/products/create — Crear (protegida)
+- GET /api/products/getProducts — Obtener todas (pública)
+- GET /api/products/getProductById/:id — Obtener por ID (pública)
+- GET /api/products/search?name=<texto> — Buscar por nombre (pública)
+- PUT /api/products/updateProduct/:id — Actualizar (protegida)
+- DELETE /api/products/deleteProduct/:id — Eliminar (protegida)
 
 ---
 
@@ -188,7 +202,7 @@ Rutas de Productos
 
 MOCKS DE USUARIOS
 
-1) Registro — POST /users/register
+1) Registro — POST /api/users/register
 ```json
 {
   "name": "user",
@@ -198,7 +212,7 @@ MOCKS DE USUARIOS
 }
 ```
 
-2) Login — POST /users/login
+2) Login — POST /api/users/login
 ```json
 {
   "email": "user@mail.com",
@@ -207,7 +221,7 @@ MOCKS DE USUARIOS
 ```
 (Copiar el token devuelto y usar en Authorization: Bearer <TOKEN>)
 
-3) Crear admin — POST /users/createAdmin
+3) Crear admin — POST /api/users/createAdmin
 ```json
 {
   "name": "admin",
@@ -220,13 +234,13 @@ MOCKS DE USUARIOS
 - Para esto, el admin principal se debe crear desde **MongoDB Compass** manualmente.
 - (Copiar el token devuelto al loguearte como admin y usar en Authorization: Bearer <TOKEN>)
 
-4) Obtener todos (protegida) — GET /users/getUsers  
+4) Obtener todos (protegida) — GET /api/users/getUsers  
 Header: Authorization: Bearer <JWT_TOKEN_AQUI>
 
-5) Obtener por ID (protegida) — GET /users/getUsersById/<ID_DEL_USUARIO>  
+5) Obtener por ID (protegida) — GET /api/users/getUsersById/<ID_DEL_USUARIO>  
 Header: Authorization: Bearer <JWT_TOKEN_AQUI>
 
-6) Actualizar (protegida) — PUT /users/updateUser/<ID_DEL_USUARIO>
+6) Actualizar (protegida) — PUT /api/users/updateUser/<ID_DEL_USUARIO>
 ```json
 {
   "name": "User Actualizado",
@@ -234,13 +248,13 @@ Header: Authorization: Bearer <JWT_TOKEN_AQUI>
 }
 ```
 
-7) Eliminar (protegida) — DELETE /users/deleteUser/<ID_DEL_USUARIO>
+7) Eliminar (protegida) — DELETE /api/users/deleteUser/<ID_DEL_USUARIO>
 
 ---
 
 MOCKS DE CATEGORÍAS
 
-1) Crear (protegida) — POST /category/create
+1) Crear (protegida) — POST /api/category/create
 ```json
 {
   "name": "Electrónica",
@@ -248,11 +262,11 @@ MOCKS DE CATEGORÍAS
 }
 ```
 
-2) Obtener todas (pública) — GET /category/getCategory
+2) Obtener todas (pública) — GET /api/category/getCategory
 
-3) Obtener por ID (pública) — GET /category/getCategoryById/<ID_DE_LA_CATEGORÍA>
+3) Obtener por ID (pública) — GET /api/category/getCategoryById/<ID_DE_LA_CATEGORÍA>
 
-4) Actualizar (protegida) — PUT /category/updateCategory/<ID_DE_LA_CATEGORÍA>
+4) Actualizar (protegida) — PUT /api/category/updateCategory/<ID_DE_LA_CATEGORÍA>
 ```json
 {
   "name": "Electrónica y Tecnología",
@@ -260,13 +274,13 @@ MOCKS DE CATEGORÍAS
 }
 ```
 
-5) Eliminar (protegida) — DELETE /category/deleteCategory/<ID_DE_LA_CATEGORÍA>
+5) Eliminar (protegida) — DELETE /api/category/deleteCategory/<ID_DE_LA_CATEGORÍA>
 
 ---
 
 MOCKS DE PRODUCTOS
 
-1) Crear (protegida) — POST /products/create
+1) Crear (protegida) — POST /api/products/create
 ```json
 {
   "name": "iPhone 15",
@@ -277,15 +291,15 @@ MOCKS DE PRODUCTOS
 }
 ```
 
-2) Obtener todas (pública) — GET /products/getProducts
+2) Obtener todas (pública) — GET /api/products/getProducts
 
-3) Obtener por ID (pública) — GET /products/getProductById/<ID_DEL_PRODUCTO>
+3) Obtener por ID (pública) — GET /api/products/getProductById/<ID_DEL_PRODUCTO>
 
-4) Buscar por nombre (pública) — GET /products/search?name=iPhone
+4) Buscar por nombre (pública) — GET /api/products/search?name=iPhone
 
 *Nota: Podés cambiar iPhone por cualquier palabra parcial para probar la búsqueda.*
 
-5) Actualizar (protegida) — PUT /products/updateProduct/<ID_DEL_PRODUCTO>
+5) Actualizar (protegida) — PUT /api/products/updateProduct/<ID_DEL_PRODUCTO>
 ```json
 {
   "price": 155000,
@@ -293,7 +307,7 @@ MOCKS DE PRODUCTOS
 }
 ```
 
-6) Eliminar (protegida) — DELETE /products/deleteProduct/<ID_DEL_PRODUCTO>
+6) Eliminar (protegida) — DELETE /api/products/deleteProduct/<ID_DEL_PRODUCTO>
 
 ---
 

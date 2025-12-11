@@ -7,6 +7,7 @@ import userRoute from "./src/routes/userRoute.js";
 import categoryRoute from "./src/routes/categoryRoute.js";
 import productRoute from "./src/routes/productRoute.js";
 import { errorHandler } from './src/middleware/errorHandler.js'
+import { apiLimiter } from './src/middleware/rateLimit.js'
 
 
 // Instancia del servidor de express
@@ -26,17 +27,25 @@ app.use(bodyParser.json())
 
 app.use(bodyParser.urlencoded({extended: true}))
 
+// Rate limiter para toda la API excepto login
+app.use("/api", (req, res, next) => {
+    if (req.path === "/users/login") {
+        return next(); // excluir login del rate limit global
+    }
+    apiLimiter(req, res, next);
+});
+
 // Rutas
-app.use("/users", userRoute);
-app.use("/category", categoryRoute);
-app.use("/products", productRoute);
+app.use("/api/users", userRoute);
+app.use("/api/category", categoryRoute);
+app.use("/api/products", productRoute);
+
+// Middleware de manejo de errores
+app.use(errorHandler);
 
 // Puerto de escucha
 app.listen(PORT, () => {
     console.log(`Server running at ${PORT}`)
 })
-
-// Middleware de manejo de errores
-app.use(errorHandler);
 
 export default app;
