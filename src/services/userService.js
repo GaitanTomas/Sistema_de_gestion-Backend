@@ -6,7 +6,7 @@ import { ApiError} from "../utils/apiError.js";
 
 // Regex para email y contraseña
 const emailRegex = /^\S+@\S+\.\S+$/;
-const passwordRegex = /(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,12}/;
+const passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,12}$/;
 
 // Registro de usuario
 export const registerUserService = async (userData) => {

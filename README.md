@@ -73,8 +73,10 @@ Sistema_de_gestion-Backend/
 - **JSON Web Tokens (JWT)**
 - **bcrypt**
 - **Cors**
-- **Body-parser**
 - **express-rate-limit**
+- **helmet**
+- **compression**
+- **morgan**
 - **nodemon** (dev)
 - **npm-check-updates** (dev)
 
@@ -143,9 +145,11 @@ npm install
 - bcrypt
 - jsonwebtoken
 - cors
-- body-parser
 - dotenv
 - express-rate-limit
+- helmet
+- compression
+- morgan
 
 *Dependencias de desarrollo:*
 - nodemon
