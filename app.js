@@ -11,20 +11,26 @@ import helmet from "helmet";
 import compression from "compression";
 import morgan from "morgan";
 
-
-// Instancia del servidor de express
 const app = express()
 
-// Trust proxy para rate limiting detrás de un proxy (como Vercel, Railway, etc.)
+// ---------------------------
+// 🔐 Seguridad Global
+// ---------------------------
+
+// Trust proxy para rate limiting detrás de un proxy (Vercel, Railway, etc.)
 app.set("trust proxy", 1);
 
-// Deshabilitar header X-Powered-By por seguridad
+// Deshabilitar header X-Powered-By
 app.disable("x-powered-by");
 
-// Seguridad con Helmet
+// Helmet (seguridad HTTP)
 app.use(helmet({
     crossOriginResourcePolicy: false,
 }));
+
+// ---------------------------
+// 📝 Logs y performance
+// ---------------------------
 
 // Logs de requests
 app.use(morgan("dev"));  // cambiar a 'combined' en producción
@@ -32,36 +38,68 @@ app.use(morgan("dev"));  // cambiar a 'combined' en producción
 // Compresión de respuestas
 app.use(compression());
 
-// CORS
+// ---------------------------
+// 🌍 CORS
+// ---------------------------
+
 app.use(cors({ 
-    origin: "*", // Cambiar el dominio según sea necesario para producción ["https://midominio.com"]
+    origin: "*", // Cambiar el dominio según sea necesario en producción ["https://midominio.com"]
     methods: ["GET", "POST", "PUT", "DELETE", "PATCH"]
 }))
 
-// Conexión a la base de datos
+// ---------------------------
+// 📦 Parseo del body
+// ---------------------------
+
+app.use(express.json({ limit: "1mb" }));
+app.use(express.urlencoded({ extended: true, limit: "1mb" }));
+
+// ---------------------------
+// 🛢 Conexión a DB
+// ---------------------------
+
 connectDB()
 
-// Middlewares para parseo de body
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+// ---------------------------
+// 🔒 Rate Limit GLOBAL excepto login
+// ---------------------------
 
-// Rate limiter para toda la API excepto login
 app.use("/api", (req, res, next) => {
     if (req.path === "/users/login") {
-        return next(); // excluir login del rate limit global
+        return next();
     }
     apiLimiter(req, res, next);
 });
 
-// Rutas
+// ---------------------------
+// 🚀 Rutas
+// ---------------------------
+
 app.use("/api/users", userRoute);
 app.use("/api/category", categoryRoute);
 app.use("/api/products", productRoute);
 
-// Middleware de manejo de errores
+// ---------------------------
+// 🟥 404 - Handler de rutas no encontradas
+// ---------------------------
+
+app.use((req, res, next) => {
+    next({
+    status: 404,
+    message: `No se encontró la ruta: ${req.originalUrl}`
+    })
+});
+
+// ---------------------------
+// ⚠️ Manejo global de errores
+// ---------------------------
+
 app.use(errorHandler);
 
-// Puerto de escucha
+// ---------------------------
+// 🚦 Iniciar servidor
+// ---------------------------
+
 app.listen(PORT, () => {
     console.log(`Server running at ${PORT}`)
 })
