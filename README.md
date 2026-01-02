@@ -30,13 +30,13 @@ Sistema_de_gestion-Backend/
 │   │   ├── productController.js       # Controlador de productos
 │   │   ├── categoryController.js      # Controlador de categorías
 │   │   ├── userController.js          # Controlador de usuarios
-│   │   └── healthController.js        # Controlador de Health check (salud del servidor y estado de la base de datos)
+│   │   └── healthController.js        # Controlador de Health check (salud de la DB)
 │   │
 │   ├── routes/                        # Definición de las rutas de la API
 │   │   ├── productRoute.js            # Rutas de productos (/products)
 │   │   ├── categoryRoute.js           # Rutas de categorías (/categories)
 │   │   ├── userRoute.js               # Rutas de usuarios (/users)
-│   │   └── healthRoute.js             # Rutas de Health check (salud del servidor y estado de la base de datos)
+│   │   └── healthRoute.js             # Rutas de Health check (salud de la DB)
 │   │
 │   ├── middleware/                    # Middlewares personalizados
 │   │   ├── verifyTokenMiddleware.js   # Middleware de autenticación JWT
