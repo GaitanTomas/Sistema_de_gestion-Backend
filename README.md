@@ -29,12 +29,14 @@ Sistema_de_gestion-Backend/
 │   ├── controllers/                   # Controladores que gestionan las solicitudes HTTP
 │   │   ├── productController.js       # Controlador de productos
 │   │   ├── categoryController.js      # Controlador de categorías
-│   │   └── userController.js          # Controlador de usuarios
+│   │   ├── userController.js          # Controlador de usuarios
+│   │   └── healthController.js        # Controlador de Health check (salud del servidor y estado de la base de datos)
 │   │
 │   ├── routes/                        # Definición de las rutas de la API
 │   │   ├── productRoute.js            # Rutas de productos (/products)
 │   │   ├── categoryRoute.js           # Rutas de categorías (/categories)
-│   │   └── userRoute.js               # Rutas de usuarios (/users)
+│   │   ├── userRoute.js               # Rutas de usuarios (/users)
+│   │   └── healthRoute.js             # Rutas de Health check (salud del servidor y estado de la base de datos)
 │   │
 │   ├── middleware/                    # Middlewares personalizados
 │   │   ├── verifyTokenMiddleware.js   # Middleware de autenticación JWT
@@ -199,6 +201,9 @@ Authorization: Bearer <JWT_TOKEN_AQUI>
 - GET /api/products/search?name=<texto> — Buscar por nombre (pública)
 - PUT /api/products/updateProduct/:id — Actualizar (protegida)
 - DELETE /api/products/deleteProduct/:id — Eliminar (protegida)
+
+**Rutas de Health 🩺**
+- GET /api/health — Health Check del servidor y estado de la base de datos (pública)
 
 ---
 
