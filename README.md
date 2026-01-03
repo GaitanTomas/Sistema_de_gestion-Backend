@@ -30,12 +30,14 @@ Sistema_de_gestion-Backend/
 │   │   ├── productController.js       # Controlador de productos
 │   │   ├── categoryController.js      # Controlador de categorías
 │   │   ├── userController.js          # Controlador de usuarios
+│   │   ├── metricsController.js       # Controlador de metricas del sistema
 │   │   └── healthController.js        # Controlador de Health check (salud de la DB)
 │   │
 │   ├── routes/                        # Definición de las rutas de la API
 │   │   ├── productRoute.js            # Rutas de productos (/products)
 │   │   ├── categoryRoute.js           # Rutas de categorías (/categories)
 │   │   ├── userRoute.js               # Rutas de usuarios (/users)
+│   │   ├── userRoute.js               # Rutas de metricas del sistema (/metrics)
 │   │   └── healthRoute.js             # Rutas de Health check (salud de la DB)
 │   │
 │   ├── middleware/                    # Middlewares personalizados
@@ -43,6 +45,7 @@ Sistema_de_gestion-Backend/
 │   │   ├── authorizeOwnerOrRoles.js   # Gestiona rol de admin o dueño
 │   │   ├── authorizeRoles.js          # Gestiona rol de admin
 │   │   ├── errorHandler.js            # Gestiona errores
+│   │   ├── errorHandler.js            # Middleware de las metricas del sistema
 │   │   └── apiLimiter.js              # Controla las peticiones a la api y en el login
 │   │
 │   └── utils/
@@ -202,8 +205,11 @@ Authorization: Bearer <JWT_TOKEN_AQUI>
 - PUT /api/products/updateProduct/:id — Actualizar (protegida)
 - DELETE /api/products/deleteProduct/:id — Eliminar (protegida)
 
-**Rutas de Health 🩺**
+**Rutas de Health Check 🩺**
 - GET /api/health — Health Check del servidor y estado de la base de datos (pública)
+
+**Rutas de Metrics 📊**
+- GET /api/metrics — Métricas internas del sistema (protegida)
 
 ---
 

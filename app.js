@@ -11,6 +11,8 @@ import helmet from "helmet";
 import compression from "compression";
 import morgan from "morgan";
 import healthRoute from "./src/routes/healthRoute.js";
+import { metricsMiddleware } from "./src/middleware/metrics.js";
+import metricsRoute from "./src/routes/metricsRoute.js";
 
 const app = express()
 
@@ -73,6 +75,12 @@ app.use("/api", (req, res, next) => {
 });
 
 // ---------------------------
+// 📊 Metricas
+// ---------------------------
+
+app.use(metricsMiddleware);
+
+// ---------------------------
 // 🚀 Rutas
 // ---------------------------
 
@@ -80,6 +88,7 @@ app.use("/api/users", userRoute);
 app.use("/api/category", categoryRoute);
 app.use("/api/products", productRoute);
 app.use("/api/health", healthRoute);
+app.use("/api/metrics", metricsRoute);
 
 // ---------------------------
 // 🟥 404 - Handler de rutas no encontradas
