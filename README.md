@@ -37,7 +37,7 @@ Sistema_de_gestion-Backend/
 │   │   ├── productRoute.js            # Rutas de productos (/products)
 │   │   ├── categoryRoute.js           # Rutas de categorías (/categories)
 │   │   ├── userRoute.js               # Rutas de usuarios (/users)
-│   │   ├── userRoute.js               # Rutas de metricas del sistema (/metrics)
+│   │   ├── metricsRoute.js            # Rutas de metricas del sistema (/metrics)
 │   │   └── healthRoute.js             # Rutas de Health check (salud de la DB)
 │   │
 │   ├── middleware/                    # Middlewares personalizados
@@ -45,7 +45,7 @@ Sistema_de_gestion-Backend/
 │   │   ├── authorizeOwnerOrRoles.js   # Gestiona rol de admin o dueño
 │   │   ├── authorizeRoles.js          # Gestiona rol de admin
 │   │   ├── errorHandler.js            # Gestiona errores
-│   │   ├── errorHandler.js            # Middleware de las metricas del sistema
+│   │   ├── metrics.js                 # Middleware de las metricas del sistema
 │   │   └── apiLimiter.js              # Controla las peticiones a la api y en el login
 │   │
 │   └── utils/
