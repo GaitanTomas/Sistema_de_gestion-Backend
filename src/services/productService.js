@@ -61,12 +61,36 @@ export const getProductByIdService = async (productId) => {
 };
 
 // Buscar productos por nombre (para barra de búsqueda)
-export const findProductByNameService = async (name) => {
+export const findProductByNameService = async (name, page = 1, limit = 10) => {
+    const skip = (page - 1) * limit;
+
     const products = await Product.find({
         name: { $regex: name, $options: "i" }
-    }).populate("category").populate("user", "name email");
-    if (!products || products.length === 0) throw ApiError.notFound(`No se encontraron productos que coincidan con "${name}"`);
-    return products;
+    })
+    .populate("category")
+    .populate("user", "name email")
+    .skip(skip)
+    .limit(limit)
+    .lean();
+
+    const total = await Product.countDocuments({
+        name: { $regex: name, $options: "i" }
+    });
+
+    if (!products || products.length === 0)
+        throw ApiError.notFound(`No se encontraron productos que coincidan con "${name}"`);
+
+    return {
+        products,
+        meta: {
+            page,
+            limit,
+            totalItems: total,
+            totalPages: Math.ceil(total / limit),
+            hasNextPage: page < Math.ceil(total / limit),
+            hasPrevPage: page > 1
+        }
+    };
 };
 
 // Actualizar un producto

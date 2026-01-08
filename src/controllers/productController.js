@@ -29,8 +29,14 @@ export const getProductByIdController = catchAsync(async (req, res) => {
 
 // Buscar productos por nombre (para barra de búsqueda)
 export const findProductByNameController = catchAsync(async (req, res) => {
-    const products = await findProductByNameService(req.query.name);
-    res.status(200).json(products);
+    const page = Math.max(Number(req.query.page) || 1, 1);
+    const limit = Math.min(Math.max(Number(req.query.limit) || 10, 1), 50);
+    const data = await findProductByNameService(req.query.name, page, limit);
+
+    res.status(200).json({
+        status: "success",
+        ...data
+    });
 });
 
 // Actualizar un producto

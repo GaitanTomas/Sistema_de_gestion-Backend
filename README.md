@@ -30,14 +30,14 @@ Sistema_de_gestion-Backend/
 │   │   ├── productController.js       # Controlador de productos
 │   │   ├── categoryController.js      # Controlador de categorías
 │   │   ├── userController.js          # Controlador de usuarios
-│   │   ├── metricsController.js       # Controlador de metricas del sistema
+│   │   ├── metricsController.js       # Controlador de métricas del sistema
 │   │   └── healthController.js        # Controlador de Health check (salud de la DB)
 │   │
 │   ├── routes/                        # Definición de las rutas de la API
 │   │   ├── productRoute.js            # Rutas de productos (/products)
 │   │   ├── categoryRoute.js           # Rutas de categorías (/categories)
 │   │   ├── userRoute.js               # Rutas de usuarios (/users)
-│   │   ├── metricsRoute.js            # Rutas de metricas del sistema (/metrics)
+│   │   ├── metricsRoute.js            # Rutas de métricas del sistema (/metrics)
 │   │   └── healthRoute.js             # Rutas de Health check (salud de la DB)
 │   │
 │   ├── middleware/                    # Middlewares personalizados
@@ -199,9 +199,14 @@ Authorization: Bearer <JWT_TOKEN_AQUI>
 
 **Rutas de Productos 📦**
 - POST /api/products/create — Crear (protegida)
-- GET /api/products/getProducts?page=1&limit=10 — Obtener productos con paginación (pública)
+- GET /api/products/getProducts?page=<número>&limit=<número> — Obtener productos con paginación (pública)
+  - `page`: página (opcional, por defecto 1)
+  - `limit`: cantidad de resultados por página (opcional, por defecto 10, máximo 50)
 - GET /api/products/getProductById/:id — Obtener por ID (pública)
-- GET /api/products/search?name=<texto> — Buscar por nombre (pública)
+- GET /api/products/search?name=<texto>&page=<número>&limit=<número> — Buscar productos por nombre con paginación (pública)
+  - `name`: texto a buscar
+  - `page`: página (opcional, por defecto 1)
+  - `limit`: cantidad de resultados por página (opcional, por defecto 10, máximo 50)
 - PUT /api/products/updateProduct/:id — Actualizar (protegida)
 - DELETE /api/products/deleteProduct/:id — Eliminar (protegida)
 
@@ -310,7 +315,7 @@ MOCKS DE PRODUCTOS
 
 3) Obtener por ID (pública) — GET /api/products/getProductById/<ID_DEL_PRODUCTO>
 
-4) Buscar por nombre (pública) — GET /api/products/search?name=iPhone
+4) Buscar por nombre (pública) — GET /api/products/search?name=iPhone&page=1&limit=10
 
 *Nota: Podés cambiar iPhone por cualquier palabra parcial para probar la búsqueda.*
 
