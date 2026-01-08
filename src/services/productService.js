@@ -25,14 +25,30 @@ export const createProductService = async (productData, userId) => {
 };
 
 // Obtener todos los producto
-export const getProductsService = async () => {
+export const getProductsService = async (page = 1, limit = 10) => {
+  const skip = (page - 1) * limit;
+
     const products = await Product.find()
-        .populate("category", "name")
-        .populate("user", "name lastName email");
-    if (products.length === 0) {
-    return [];
-    }
-    return products;
+    .populate("category", "name")
+    .populate("user", "name lastName email")
+    .sort({ createdAt: -1 })
+    .skip(skip)
+    .limit(limit)
+    .lean();
+
+    const total = await Product.countDocuments();
+
+    return {
+    products,
+    meta: {
+        page,
+        limit,
+        totalItems: total,
+        totalPages: Math.ceil(total / limit),
+        hasNextPage: page < Math.ceil(total / limit),
+        hasPrevPage: page > 1
+        }
+    };
 };
 
 // Obtener un producto por ID

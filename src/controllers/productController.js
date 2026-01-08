@@ -10,10 +10,14 @@ export const createProductController = catchAsync(async (req, res) => {
 
 // Obtener todos los producto
 export const getProductsController = catchAsync(async (req, res) => {
-    const products = await getProductsService();
+    const page = Math.max(Number(req.query.page) || 1, 1);
+    const limit = Math.min(Math.max(Number(req.query.limit) || 10, 1), 50);
+
+    const data = await getProductsService(page, limit);
+
     res.status(200).json({
-        message: products.length === 0 ? "No se encontraron productos" : undefined,
-        products
+        status: "success",
+        ...data
     });
 });
 

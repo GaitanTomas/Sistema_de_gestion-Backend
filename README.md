@@ -52,13 +52,13 @@ Sistema_de_gestion-Backend/
 │       ├── apiError.js                # Clase para lanzar errores personalizados con status HTTP
 │       └── catchAsync.js              # Wrapper para evitar repetir try/catch en controladores
 │   
-├── .env                          # Variables de entorno (URI MongoDB, JWT_SECRET, etc.)
-├── .env.example                  # Ejemplo de configuración del entorno
-├── .gitignore                    # Archivos y carpetas ignorados por Git
-├── app.js                        # Punto de entrada principal del servidor Express
-├── package.json                  # Dependencias, scripts y metadatos del proyecto
-├── package-lock.json             # Versiones exactas de las dependencias instaladas
-└── README.md                     # Documentación general del proyecto
+├── .env                               # Variables de entorno (URI MongoDB, JWT_SECRET, etc.)
+├── .env.example                       # Ejemplo de configuración del entorno
+├── .gitignore                         # Archivos y carpetas ignorados por Git
+├── app.js                             # Punto de entrada principal del servidor Express
+├── package.json                       # Dependencias, scripts y metadatos del proyecto
+├── package-lock.json                  # Versiones exactas de las dependencias instaladas
+└── README.md                          # Documentación general del proyecto
 
 ```
 
@@ -199,7 +199,7 @@ Authorization: Bearer <JWT_TOKEN_AQUI>
 
 **Rutas de Productos 📦**
 - POST /api/products/create — Crear (protegida)
-- GET /api/products/getProducts — Obtener todas (pública)
+- GET /api/products/getProducts?page=1&limit=10 — Obtener productos con paginación (pública)
 - GET /api/products/getProductById/:id — Obtener por ID (pública)
 - GET /api/products/search?name=<texto> — Buscar por nombre (pública)
 - PUT /api/products/updateProduct/:id — Actualizar (protegida)
@@ -306,7 +306,7 @@ MOCKS DE PRODUCTOS
 }
 ```
 
-2) Obtener todas (pública) — GET /api/products/getProducts
+2) Obtener todas (pública) — GET /api/products/getProducts?page=1&limit=10
 
 3) Obtener por ID (pública) — GET /api/products/getProductById/<ID_DEL_PRODUCTO>
 
