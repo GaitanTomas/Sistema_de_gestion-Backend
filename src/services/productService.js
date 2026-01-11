@@ -2,6 +2,7 @@ import Category from '../models/categoryModel.js';
 import User from '../models/userModel.js';
 import Product from '../models/productModel.js';
 import { ApiError} from "../utils/apiError.js";
+import { buildProductSort } from "../utils/buildProductSort.js";
 
 // Crear un nuevo producto
 export const createProductService = async (productData, userId) => {
@@ -25,13 +26,14 @@ export const createProductService = async (productData, userId) => {
 };
 
 // Obtener todos los producto
-export const getProductsService = async (page = 1, limit = 10) => {
-  const skip = (page - 1) * limit;
+export const getProductsService = async (page = 1, limit = 10, sort) => {
+    const skip = (page - 1) * limit;
+    const sortQuery = buildProductSort(sort);
 
     const products = await Product.find()
     .populate("category", "name")
     .populate("user", "name lastName email")
-    .sort({ createdAt: -1 })
+    .sort(sortQuery)
     .skip(skip)
     .limit(limit)
     .lean();
@@ -61,14 +63,16 @@ export const getProductByIdService = async (productId) => {
 };
 
 // Buscar productos por nombre (para barra de búsqueda)
-export const findProductByNameService = async (name, page = 1, limit = 10) => {
+export const findProductByNameService = async (name, page = 1, limit = 10, sort) => {
     const skip = (page - 1) * limit;
+    const sortQuery = buildProductSort(sort);
 
     const products = await Product.find({
         name: { $regex: name, $options: "i" }
     })
     .populate("category")
     .populate("user", "name email")
+    .sort(sortQuery)
     .skip(skip)
     .limit(limit)
     .lean();

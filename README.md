@@ -1,6 +1,6 @@
 # 🛒 Sistema de Gestión - Backend
 
-API REST en **Node.js** + **Express** + **MongoDB** para gestionar usuarios, categorías y productos. Pensado como backend de un sistema de inventario para comercios, con autenticación **JWT**, encriptación de contraseñas con **bcrypt**, manejo de roles admin/cliente y rutas protegidas para administración del stock.
+API REST desarrollada con **Node.js**, **Express** y **MongoDB** para gestionar usuarios, categorías y productos. Pensado como backend de un sistema de inventario para comercios, con autenticación **JWT**, encriptación de contraseñas con **bcrypt**, manejo de roles admin/cliente y rutas protegidas para administración del stock.
 
 ---
 
@@ -50,6 +50,7 @@ Sistema_de_gestion-Backend/
 │   │
 │   └── utils/
 │       ├── apiError.js                # Clase para lanzar errores personalizados con status HTTP
+│       ├── buildProductSort.js        # Utilidad para construir ordenamientos dinámicos (sorting)
 │       └── catchAsync.js              # Wrapper para evitar repetir try/catch en controladores
 │   
 ├── .env                               # Variables de entorno (URI MongoDB, JWT_SECRET, etc.)
@@ -199,22 +200,46 @@ Authorization: Bearer <JWT_TOKEN_AQUI>
 
 **Rutas de Productos 📦**
 - POST /api/products/create — Crear (protegida)
-- GET /api/products/getProducts?page=<número>&limit=<número> — Obtener productos con paginación (pública)
+- GET /api/products/getProducts?page=<número>&limit=<número>&sort=<criterio> — Obtener productos con paginación y ordenamiento (pública)
   - `page`: página (opcional, por defecto 1)
   - `limit`: cantidad de resultados por página (opcional, por defecto 10, máximo 50)
+  - `sort`: criterio de ordenamiento (opcional)
 - GET /api/products/getProductById/:id — Obtener por ID (pública)
-- GET /api/products/search?name=<texto>&page=<número>&limit=<número> — Buscar productos por nombre con paginación (pública)
+- GET /api/products/search?name=<texto>&page=<número>&limit=<número>&sort=<criterio> — Buscar productos por nombre con paginación y ordenamiento (pública)
   - `name`: texto a buscar
   - `page`: página (opcional, por defecto 1)
   - `limit`: cantidad de resultados por página (opcional, por defecto 10, máximo 50)
+  - `sort`: criterio de ordenamiento (opcional)
+
 - PUT /api/products/updateProduct/:id — Actualizar (protegida)
 - DELETE /api/products/deleteProduct/:id — Eliminar (protegida)
+
+### 🔄 Ordenamiento de productos (Sorting)
+
+Los endpoints de productos soportan ordenamiento dinámico mediante el query param `sort`.
+
+**Valores disponibles:**
+
+| Valor | Descripción |
+|------|------------|
+| `newest` | Más nuevos primero |
+| `oldest` | Más antiguos primero |
+| `price_asc` | Precio menor a mayor |
+| `price_desc` | Precio mayor a menor |
+| `name_asc` | Nombre A → Z |
+| `name_desc` | Nombre Z → A |
+
+El ordenamiento puede combinarse libremente con **paginación y búsqueda**.
 
 **Rutas de Health Check 🩺**
 - GET /api/health — Health Check del servidor y estado de la base de datos (pública)
 
+> Usada por servicios externos (load balancers, uptime monitors).
+
 **Rutas de Metrics 📊**
 - GET /api/metrics — Métricas internas del sistema (protegida)
+
+> Pensada para monitoreo interno, debugging y observabilidad en entornos productivos.
 
 ---
 
@@ -311,11 +336,11 @@ MOCKS DE PRODUCTOS
 }
 ```
 
-2) Obtener todas (pública) — GET /api/products/getProducts?page=1&limit=10
+2) Obtener todos (pública) — GET /api/products/getProducts?page=1&limit=10&sort=newest
 
 3) Obtener por ID (pública) — GET /api/products/getProductById/<ID_DEL_PRODUCTO>
 
-4) Buscar por nombre (pública) — GET /api/products/search?name=iPhone&page=1&limit=10
+4) Buscar por nombre (pública) — GET /api/products/search?name=iPhone&page=1&limit=10&sort=price_desc
 
 *Nota: Podés cambiar iPhone por cualquier palabra parcial para probar la búsqueda.*
 

@@ -12,8 +12,9 @@ export const createProductController = catchAsync(async (req, res) => {
 export const getProductsController = catchAsync(async (req, res) => {
     const page = Math.max(Number(req.query.page) || 1, 1);
     const limit = Math.min(Math.max(Number(req.query.limit) || 10, 1), 50);
+    const sort = req.query.sort;
 
-    const data = await getProductsService(page, limit);
+    const data = await getProductsService(page, limit, sort);
 
     res.status(200).json({
         status: "success",
@@ -31,7 +32,9 @@ export const getProductByIdController = catchAsync(async (req, res) => {
 export const findProductByNameController = catchAsync(async (req, res) => {
     const page = Math.max(Number(req.query.page) || 1, 1);
     const limit = Math.min(Math.max(Number(req.query.limit) || 10, 1), 50);
-    const data = await findProductByNameService(req.query.name, page, limit);
+    const sort = req.query.sort;
+
+    const data = await findProductByNameService(req.query.name, page, limit, sort);
 
     res.status(200).json({
         status: "success",
