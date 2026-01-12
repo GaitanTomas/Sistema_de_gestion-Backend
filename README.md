@@ -1,6 +1,14 @@
 # 🛒 Sistema de Gestión - Backend
 
-API REST desarrollada con **Node.js**, **Express** y **MongoDB** para gestionar usuarios, categorías y productos. Pensado como backend de un sistema de inventario para comercios, con autenticación **JWT**, encriptación de contraseñas con **bcrypt**, manejo de roles admin/cliente y rutas protegidas para administración del stock.
+API REST desarrollada con **Node.js**, **Express** y **MongoDB** para gestionar usuarios, categorías y productos. Pensada como backend de un sistema de inventario para comercios, incluye:  
+
+- 🔐 **Autenticación segura** con JWT y contraseñas encriptadas con bcrypt.  
+- 👥 **Gestión de roles** (admin / cliente) y rutas protegidas para la administración del stock.  
+- 📦 **Endpoints para usuarios, categorías y productos**, con soporte para **paginación, ordenamiento y filtrado**.  
+- 🔎 **Búsqueda de productos por nombre**, combinable con filtros y ordenamiento.  
+- 🩺 **Health Check** y 📊 **métricas internas** para monitoreo y debugging.  
+- 🛡 **Seguridad adicional** mediante rate limiting y protección contra abusos y ataques de fuerza bruta.  
+- 🚀 Preparado para **desarrollo y producción**, con scripts de ejecución y **mocks** para probar la API.
 
 ---
 
@@ -75,18 +83,25 @@ Sistema_de_gestion-Backend/
 
 ## 🛠 Tecnologías utilizadas
 
-- **Node.js** (ES Modules)
-- **Express**
-- **MongoDB** + **Mongoose**
-- **JSON Web Tokens (JWT)**
-- **bcrypt**
-- **Cors**
-- **express-rate-limit**
-- **helmet**
-- **compression**
-- **morgan**
-- **nodemon** (dev)
-- **npm-check-updates** (dev)
+**Backend:**  
+- Node.js (ES Modules)  
+- Express  
+- MongoDB + Mongoose  
+
+**Autenticación y seguridad:**  
+- JSON Web Tokens (JWT)  
+- bcrypt  
+- Cors  
+- express-rate-limit  
+- helmet  
+
+**Optimización y logging:**  
+- compression  
+- morgan  
+
+**Herramientas de desarrollo:**  
+- nodemon  
+- npm-check-updates
 
 ---
 
@@ -95,13 +110,13 @@ Sistema_de_gestion-Backend/
 Crea un archivo `.env` en la raíz del proyecto con las siguientes variables:
 
 ```env
-MONGODB_URI=mongodb://localhost:27017
-DB_NAME=tu_basedatos
-SECRET=tu_secreto_jwt
-PORT=3000
+MONGODB_URI=mongodb://localhost:27017    # URL de conexión a MongoDB
+DB_NAME=tu_basedatos                     # Nombre de la base de datos
+SECRET=tu_secreto_jwt                    # Clave secreta para JWT
+PORT=3000                                # Puerto en el que se ejecuta el servidor
 ```
 
-Asegurarse que `src/config/config.js` lea estas variables.
+⚠️ Asegurarse que `src/config/config.js` lea estas variables.
 
 ---
 
@@ -128,23 +143,22 @@ Asegúrate de tener instalado:
 
 2. 📁 **Clonar el repositorio**
 
-```
+``` bash
 git clone https://github.com/GaitanTomas/Sistema_de_gestion-Backend
 
 ```
 
 3. **Entrar al directorio**
 
-```
+``` bash
 cd Sistema_de_gestion-Backend
 
 ```
 
 4. 📦 **Instalar dependencias**
 
-```
+``` bash
 npm install
-
 ```
 
 *Dependencias principales:*
@@ -165,19 +179,12 @@ npm install
 
 5. 🚀 **Ejecutar el proyecto**
 
-🧰 Scripts disponibles:
+*Scripts disponibles:*
 
-- *Modo desarrollo*
-```
-npm run dev
-
-```
-
-- *Modo producción*
-```
-npm start
-
-```
+| Modo | Comando |
+|------|---------|
+| Desarrollo | `npm run dev` |
+| Producción | `npm start` |
 
 ## 📡 Endpoints disponibles
 
@@ -209,7 +216,7 @@ npm start
   /api/products/getProducts?page=<número>&limit=<número>&sort=<criterio>&category=<id_categoria>&minPrice=<número>&maxPrice=<número>&inStock=<true|false>
   ```
 - GET /api/products/getProductById/:id — Obtener por ID (pública)
-- GET /api/products/search — Buscar productos por nombre (pública)
+- GET /api/products/search?name=<texto> — Buscar productos por nombre (pública)
 
 > Soporta **búsqueda por nombre (requerido), paginación, ordenamiento y filtros**
 
@@ -219,7 +226,11 @@ npm start
 - PUT /api/products/updateProduct/:id — Actualizar (protegida)
 - DELETE /api/products/deleteProduct/:id — Eliminar (protegida)
 
-### 📄 Paginación de productos
+### 🔎 Paginación, ordenamiento y filtrado de productos
+
+> 💡 Todos estos parámetros se pueden combinar libremente.
+
+1️⃣ **Paginación**
 
 Los endpoints de productos soportan **paginación** mediante los siguientes query params:
 
@@ -228,9 +239,7 @@ Los endpoints de productos soportan **paginación** mediante los siguientes quer
 | `page` | Número de página (opcional, por defecto 1) |
 | `limit` | Cantidad de resultados por página (opcional, por defecto 10, máximo 50) |
 
-> La paginación puede combinarse libremente con **búsqueda, filtros y ordenamiento**.
-
-### 🔄 Ordenamiento de productos
+2️⃣ **Ordenamiento de productos**
 
 El ordenamiento se realiza mediante el query param `sort`.
 
@@ -245,9 +254,7 @@ El ordenamiento se realiza mediante el query param `sort`.
 | `name_asc` | Nombre A → Z |
 | `name_desc` | Nombre Z → A |
 
-> El ordenamiento puede combinarse libremente con **paginación, búsqueda y filtros**.
-
-### 🔍 Filtrado de productos
+3️⃣ **Filtrado de productos**
 
 El filtrado se realiza mediante los siguientes query params:
 
@@ -257,8 +264,6 @@ El filtrado se realiza mediante los siguientes query params:
 | `minPrice` | Precio mínimo |
 | `maxPrice` | Precio máximo |
 | `inStock` | `true` → con stock / `false` → sin stock |
-
-> El filtrado puede combinarse libremente con **paginación, búsqueda y ordenamiento**.
 
 **Rutas de Health Check 🩺**
 - GET /api/health — Health Check del servidor y estado de la base de datos (pública)
