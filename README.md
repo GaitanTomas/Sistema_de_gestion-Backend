@@ -203,30 +203,17 @@ Authorization: Bearer <JWT_TOKEN_AQUI>
 **Rutas de Productos 📦**
 - POST /api/products/create — Crear (protegida)
 - GET /api/products/getProducts — Obtener productos (pública)
-  Soporta **paginación, ordenamiento y filtros**
 
-  /api/products/getProducts
-  ?page=<número>
-  &limit=<número>
-  &sort=<criterio>
-  &category=<id_categoria>
-  &minPrice=<número>
-  &maxPrice=<número>
-  &inStock=<true|false>
+Soporta **paginación, ordenamiento y filtros**
+Ejemplo:
+/api/products/getProducts?page=<número>&limit=<número>&sort=<criterio>&category=<id_categoria>&minPrice=<número>&maxPrice=<número>&inStock=<true|false>
 
 - GET /api/products/getProductById/:id — Obtener por ID (pública)
 - GET /api/products/search — Buscar productos por nombre con paginación y ordenamiento (pública)
-  Soporta **paginación, ordenamiento y filtros**
 
-  /api/products/search
-  ?name=<texto> - texto a buscar
-  &page=<número>
-  &limit=<número>
-  &sort=<criterio>
-  &category=<id_categoria>
-  &minPrice=<número>
-  &maxPrice=<número>
-  &inStock=<true|false>
+Soporta **paginación, ordenamiento y filtros**
+Ejemplo:
+/api/products/search?name=<texto>&page=<número>&limit=<número>&sort=<criterio>&category=<id_categoria>&minPrice=<número>&maxPrice=<número>&inStock=<true|false>
 
 - PUT /api/products/updateProduct/:id — Actualizar (protegida)
 - DELETE /api/products/deleteProduct/:id — Eliminar (protegida)
