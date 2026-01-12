@@ -51,6 +51,8 @@ Sistema_de_gestion-Backend/
 │   └── utils/
 │       ├── apiError.js                # Clase para lanzar errores personalizados con status HTTP
 │       ├── buildProductSort.js        # Utilidad para construir ordenamientos dinámicos (sorting)
+│       ├── extractProductFilters.js   # Extrae y normaliza filtros desde req.query
+│       ├── buildProductFilters.js     # Convierte filtros genéricos en queries MongoDB
 │       └── catchAsync.js              # Wrapper para evitar repetir try/catch en controladores
 │   
 ├── .env                               # Variables de entorno (URI MongoDB, JWT_SECRET, etc.)
@@ -200,16 +202,31 @@ Authorization: Bearer <JWT_TOKEN_AQUI>
 
 **Rutas de Productos 📦**
 - POST /api/products/create — Crear (protegida)
-- GET /api/products/getProducts?page=<número>&limit=<número>&sort=<criterio> — Obtener productos con paginación y ordenamiento (pública)
-  - `page`: página (opcional, por defecto 1)
-  - `limit`: cantidad de resultados por página (opcional, por defecto 10, máximo 50)
-  - `sort`: criterio de ordenamiento (opcional)
+- GET /api/products/getProducts — Obtener productos (pública)
+  Soporta **paginación, ordenamiento y filtros**
+
+  /api/products/getProducts
+  ?page=<número>
+  &limit=<número>
+  &sort=<criterio>
+  &category=<id_categoria>
+  &minPrice=<número>
+  &maxPrice=<número>
+  &inStock=<true|false>
+
 - GET /api/products/getProductById/:id — Obtener por ID (pública)
-- GET /api/products/search?name=<texto>&page=<número>&limit=<número>&sort=<criterio> — Buscar productos por nombre con paginación y ordenamiento (pública)
-  - `name`: texto a buscar
-  - `page`: página (opcional, por defecto 1)
-  - `limit`: cantidad de resultados por página (opcional, por defecto 10, máximo 50)
-  - `sort`: criterio de ordenamiento (opcional)
+- GET /api/products/search — Buscar productos por nombre con paginación y ordenamiento (pública)
+  Soporta **paginación, ordenamiento y filtros**
+
+  /api/products/search
+  ?name=<texto> - texto a buscar
+  &page=<número>
+  &limit=<número>
+  &sort=<criterio>
+  &category=<id_categoria>
+  &minPrice=<número>
+  &maxPrice=<número>
+  &inStock=<true|false>
 
 - PUT /api/products/updateProduct/:id — Actualizar (protegida)
 - DELETE /api/products/deleteProduct/:id — Eliminar (protegida)
@@ -229,7 +246,23 @@ Los endpoints de productos soportan ordenamiento dinámico mediante el query par
 | `name_asc` | Nombre A → Z |
 | `name_desc` | Nombre Z → A |
 
-El ordenamiento puede combinarse libremente con **paginación y búsqueda**.
+El ordenamiento puede combinarse libremente con **paginación, búsqueda y filtros**.
+
+### 🔄 Filtrado de productos
+
+Los endpoints de productos soportan filtrado dinámico mediante los siguientes queries:
+
+| Parámetro | Descripción |
+|---------|------------|
+| `page` | Página (opcional, por defecto 1) |
+| `limit` | Resultados por página (opcional, por defecto 10, máximo 50) |
+| `sort` | Criterio de ordenamiento (opcional) |
+| `category` | ID de la categoría |
+| `minPrice` | Precio mínimo |
+| `maxPrice` | Precio máximo |
+| `inStock` | `true` → con stock / `false` → sin stock |
+
+El filtrado puede combinarse libremente con **paginación, búsqueda y ordenamiento**.
 
 **Rutas de Health Check 🩺**
 - GET /api/health — Health Check del servidor y estado de la base de datos (pública)
@@ -338,11 +371,13 @@ MOCKS DE PRODUCTOS
 
 2) Obtener todos (pública) — GET /api/products/getProducts?page=1&limit=10&sort=newest
 
+> Todos los filtros son opcionales y pueden agregarse libremente
+
 3) Obtener por ID (pública) — GET /api/products/getProductById/<ID_DEL_PRODUCTO>
 
 4) Buscar por nombre (pública) — GET /api/products/search?name=iPhone&page=1&limit=10&sort=price_desc
 
-*Nota: Podés cambiar iPhone por cualquier palabra parcial para probar la búsqueda.*
+> Todos los filtros son opcionales y pueden agregarse libremente. También podés cambiar iPhone por cualquier palabra parcial para probar la búsqueda.
 
 5) Actualizar (protegida) — PUT /api/products/updateProduct/<ID_DEL_PRODUCTO>
 ```json
