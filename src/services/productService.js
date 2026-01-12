@@ -3,6 +3,7 @@ import User from '../models/userModel.js';
 import Product from '../models/productModel.js';
 import { ApiError} from "../utils/apiError.js";
 import { buildProductSort } from "../utils/buildProductSort.js";
+import { buildProductFilters } from "../utils/buildProductFilters.js";
 
 // Crear un nuevo producto
 export const createProductService = async (productData, userId) => {
@@ -26,11 +27,12 @@ export const createProductService = async (productData, userId) => {
 };
 
 // Obtener todos los producto
-export const getProductsService = async (page = 1, limit = 10, sort) => {
+export const getProductsService = async (page = 1, limit = 10, sort, filters = {}) => {
     const skip = (page - 1) * limit;
     const sortQuery = buildProductSort(sort);
+    const filterQuery = buildProductFilters(filters);
 
-    const products = await Product.find()
+    const products = await Product.find(filterQuery)
     .populate("category", "name")
     .populate("user", "name lastName email")
     .sort(sortQuery)
@@ -38,7 +40,7 @@ export const getProductsService = async (page = 1, limit = 10, sort) => {
     .limit(limit)
     .lean();
 
-    const total = await Product.countDocuments();
+    const total = await Product.countDocuments(filterQuery);
 
     return {
     products,
@@ -63,23 +65,22 @@ export const getProductByIdService = async (productId) => {
 };
 
 // Buscar productos por nombre (para barra de búsqueda)
-export const findProductByNameService = async (name, page = 1, limit = 10, sort) => {
+export const findProductByNameService = async (name, page = 1, limit = 10, sort, filters = {}) => {
     const skip = (page - 1) * limit;
     const sortQuery = buildProductSort(sort);
+    const filterQuery = buildProductFilters(filters);
 
-    const products = await Product.find({
-        name: { $regex: name, $options: "i" }
-    })
-    .populate("category")
-    .populate("user", "name email")
-    .sort(sortQuery)
-    .skip(skip)
-    .limit(limit)
-    .lean();
+    filterQuery.name = { $regex: name, $options: "i" };
 
-    const total = await Product.countDocuments({
-        name: { $regex: name, $options: "i" }
-    });
+    const products = await Product.find(filterQuery)
+        .populate("category")
+        .populate("user", "name email")
+        .sort(sortQuery)
+        .skip(skip)
+        .limit(limit)
+        .lean();
+
+    const total = await Product.countDocuments(filterQuery);
 
     if (!products || products.length === 0)
         throw ApiError.notFound(`No se encontraron productos que coincidan con "${name}"`);
