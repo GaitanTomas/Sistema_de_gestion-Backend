@@ -181,8 +181,7 @@ npm start
 
 ## 📡 Endpoints disponibles
 
-Usar header en rutas protegidas:
-Authorization: Bearer <JWT_TOKEN_AQUI>
+> 🔒 Usar header en rutas protegidas: Authorization: Bearer <JWT_TOKEN_AQUI>
 
 **Rutas de Usuarios 👤**
 - POST /api/users/register — Registro (pública)
@@ -204,27 +203,36 @@ Authorization: Bearer <JWT_TOKEN_AQUI>
 - POST /api/products/create — Crear (protegida)
 - GET /api/products/getProducts — Obtener productos (pública)
 
-  Soporta **paginación, ordenamiento y filtros**
+> Soporta **paginación, ordenamiento y filtros**
 
-  Ejemplo:
   ```bash
   /api/products/getProducts?page=<número>&limit=<número>&sort=<criterio>&category=<id_categoria>&minPrice=<número>&maxPrice=<número>&inStock=<true|false>
   ```
 - GET /api/products/getProductById/:id — Obtener por ID (pública)
 - GET /api/products/search — Buscar productos por nombre (pública)
 
-  Soporta **paginación, ordenamiento y filtros**
+> Soporta **búsqueda por nombre (requerido), paginación, ordenamiento y filtros**
 
-  Ejemplo:
   ```bash
   /api/products/search?name=<texto>&page=<número>&limit=<número>&sort=<criterio>&category=<id_categoria>&minPrice=<número>&maxPrice=<número>&inStock=<true|false>
   ```
 - PUT /api/products/updateProduct/:id — Actualizar (protegida)
 - DELETE /api/products/deleteProduct/:id — Eliminar (protegida)
 
-### 🔄 Ordenamiento de productos (Sorting)
+### 📄 Paginación de productos
 
-Los endpoints de productos soportan ordenamiento dinámico mediante el query param `sort`.
+Los endpoints de productos soportan **paginación** mediante los siguientes query params:
+
+| Parámetro | Descripción |
+|----------|------------|
+| `page` | Número de página (opcional, por defecto 1) |
+| `limit` | Cantidad de resultados por página (opcional, por defecto 10, máximo 50) |
+
+> La paginación puede combinarse libremente con **búsqueda, filtros y ordenamiento**.
+
+### 🔄 Ordenamiento de productos
+
+El ordenamiento se realiza mediante el query param `sort`.
 
 **Valores disponibles:**
 
@@ -237,23 +245,20 @@ Los endpoints de productos soportan ordenamiento dinámico mediante el query par
 | `name_asc` | Nombre A → Z |
 | `name_desc` | Nombre Z → A |
 
-El ordenamiento puede combinarse libremente con **paginación, búsqueda y filtros**.
+> El ordenamiento puede combinarse libremente con **paginación, búsqueda y filtros**.
 
-### 🔄 Filtrado de productos
+### 🔍 Filtrado de productos
 
-Los endpoints de productos soportan filtrado dinámico mediante los siguientes queries:
+El filtrado se realiza mediante los siguientes query params:
 
 | Parámetro | Descripción |
 |---------|------------|
-| `page` | Página (opcional, por defecto 1) |
-| `limit` | Resultados por página (opcional, por defecto 10, máximo 50) |
-| `sort` | Criterio de ordenamiento (opcional) |
 | `category` | ID de la categoría |
 | `minPrice` | Precio mínimo |
 | `maxPrice` | Precio máximo |
 | `inStock` | `true` → con stock / `false` → sin stock |
 
-El filtrado puede combinarse libremente con **paginación, búsqueda y ordenamiento**.
+> El filtrado puede combinarse libremente con **paginación, búsqueda y ordenamiento**.
 
 **Rutas de Health Check 🩺**
 - GET /api/health — Health Check del servidor y estado de la base de datos (pública)
@@ -263,7 +268,7 @@ El filtrado puede combinarse libremente con **paginación, búsqueda y ordenamie
 **Rutas de Metrics 📊**
 - GET /api/metrics — Métricas internas del sistema (protegida)
 
-> Pensada para monitoreo interno, debugging y observabilidad en entornos productivos.
+> ⚠️ Endpoint interno, protegido. Para monitoreo y debugging.
 
 ---
 
