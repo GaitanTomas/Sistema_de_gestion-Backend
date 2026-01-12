@@ -204,17 +204,21 @@ Authorization: Bearer <JWT_TOKEN_AQUI>
 - POST /api/products/create — Crear (protegida)
 - GET /api/products/getProducts — Obtener productos (pública)
 
-Soporta **paginación, ordenamiento y filtros**
-Ejemplo:
-/api/products/getProducts?page=<número>&limit=<número>&sort=<criterio>&category=<id_categoria>&minPrice=<número>&maxPrice=<número>&inStock=<true|false>
+  Soporta **paginación, ordenamiento y filtros**
 
+  Ejemplo:
+  ```bash
+  /api/products/getProducts?page=<número>&limit=<número>&sort=<criterio>&category=<id_categoria>&minPrice=<número>&maxPrice=<número>&inStock=<true|false>
+  ```
 - GET /api/products/getProductById/:id — Obtener por ID (pública)
-- GET /api/products/search — Buscar productos por nombre con paginación y ordenamiento (pública)
+- GET /api/products/search — Buscar productos por nombre (pública)
 
-Soporta **paginación, ordenamiento y filtros**
-Ejemplo:
-/api/products/search?name=<texto>&page=<número>&limit=<número>&sort=<criterio>&category=<id_categoria>&minPrice=<número>&maxPrice=<número>&inStock=<true|false>
+  Soporta **paginación, ordenamiento y filtros**
 
+  Ejemplo:
+  ```bash
+  /api/products/search?name=<texto>&page=<número>&limit=<número>&sort=<criterio>&category=<id_categoria>&minPrice=<número>&maxPrice=<número>&inStock=<true|false>
+  ```
 - PUT /api/products/updateProduct/:id — Actualizar (protegida)
 - DELETE /api/products/deleteProduct/:id — Eliminar (protegida)
 
