@@ -86,7 +86,8 @@ Sistema_de_gestion-Backend/
 **Backend:**  
 - Node.js (ES Modules)  
 - Express  
-- MongoDB + Mongoose  
+- MongoDB + Mongoose
+- Multer *(instalado – pendiente de implementación para manejo de archivos)*
 
 **Autenticación y seguridad:**  
 - JSON Web Tokens (JWT)  
